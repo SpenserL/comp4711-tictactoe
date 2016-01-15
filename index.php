@@ -8,16 +8,7 @@
 
     $board = (isset($_GET["board"])) ? $_GET["board"] : null;
     $game = new Game($board);
-
-    if ($game->winner("x")) {
-        echo "X wins.";
-    } else if ($game->winner("o")) {
-        echo "O wins.";
-    } else {
-        echo "No winner yet.";
-    }
-    $game->display();
-
+    $game->run();
     ?>
     </body>
 </html>
@@ -41,6 +32,25 @@ class Game {
 
     }
 
+    // game loop
+    public function run() {
+        $msg = null;
+
+        if ($this->winner("x")) {
+            $msg = "You Won!";
+        } else if ($this->tied()) {
+            $msg = "Tie Game!";
+        } else {
+            $this->move();
+
+            if ($this->winner("o")) {
+                $msg = "You Lose!";
+            }
+        }
+        echo $msg;
+        $this->display();
+    }
+
     // display the game board
     public function display() {
         echo "<table cols=”3” style=”font­size:large; font­weight:bold”>";
@@ -51,7 +61,7 @@ class Game {
         }
         echo "</tr>"; // close the last row
         echo "</table>";
-        echo "<br><a href='?'>New Game</a>";
+        echo "<br><br><a href='?'>New Game</a>";
     }
     // get the appropriate character to display on the game board, else return a hyphen
     private function show_cell($cell) {
@@ -68,6 +78,28 @@ class Game {
         $link = "/comp4711-tictactoe/index.php?board=" . $move;
 
         return "<td><a href='$link'>-</a></td>";
+    }
+
+    // check if the game tied
+    private function tied() {
+        for ($i = 0; $i < 9; $i++) {
+            if ($this->position[$i] == "-") {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private function move() {
+        $done = false;
+
+        while (!$done) {
+            $rand = rand(0, 8);
+            if ($this->position[$rand] == "-") {
+                $this->position[$rand] = "o";
+                $done = true;
+            }
+        }
     }
     // tic tac toe logic for finding a winner
     public function winner($token) {

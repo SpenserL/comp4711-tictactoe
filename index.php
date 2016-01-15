@@ -11,12 +11,30 @@
     $level = 10;
     echo "Hi, my name is " . $name . " and I am a level " . $level . " " . $what;
 
+    // unused ?
+    switch ($name) {
+        case "Jim":
+        $answer = "great";
+        break;
+        case "George":
+        $answer = "unknown";
+        break;
+
+        default:
+        $answer = "unknown";
+    }
     echo "<br>";
 
     $hoursworked = 10;
     $rate = 12;
-    $total = $hoursworked * $rate;
-    echo "You owe me " . $total;
+    if ($hoursworked > 40) {
+        $total = $hoursworked * $rate * 1.5;
+    } else {
+        $total = $hoursworked * $rate;
+    }
+
+    echo ($total > 0) ? "You owe me " . $total : "Your're Welcome";
+
 
     ?>
     </body>

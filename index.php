@@ -1,15 +1,37 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
         <title>COMP 4711 Lab 1</title>
+
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="css/styles.css" rel="stylesheet">
     </head>
     <body>
-    <?php
 
-    $board = (isset($_GET["board"])) ? $_GET["board"] : null;
-    $game = new Game($board);
-    $game->run();
-    ?>
+    <div class="container">
+        <div class="page-header text-center">
+            <h1 class="visible-lg">COMP 4711 - Lab 1</h1>
+            <h2 class="visible-md visible-sm visible-xs">COMP 4711 - Lab 1</h2>
+        </div>
+
+        <div class="text-center">
+            <?php
+
+            $board = (isset($_GET["board"])) ? $_GET["board"] : null;
+            $game = new Game($board);
+            $game->run();
+            ?>
+        </div>
+    </div>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
     </body>
 </html>
 
@@ -17,6 +39,7 @@
 
 class Game {
     var $position;
+    var $game_over;
 
     // construct the game object
     public function __construct($board) {
@@ -30,6 +53,7 @@ class Game {
             $this->position = str_split($board);
         }
 
+        $game_over = false;
     }
 
     // game loop
@@ -38,22 +62,28 @@ class Game {
 
         if ($this->winner("x")) {
             $msg = "You Won!";
-        } else if ($this->tied()) {
-            $msg = "Tie Game!";
+            $this->game_over = true;
         } else {
             $this->move();
 
             if ($this->winner("o")) {
                 $msg = "You Lose!";
+                $this->game_over = true;
             }
         }
-        echo $msg;
+
+        if ($this->tied()) {
+            $msg = "Tie Game!";
+            $this->game_over = true;
+        }
+        echo "<h3>$msg</h3>";
+
         $this->display();
     }
 
     // display the game board
     public function display() {
-        echo "<table cols=”3” style=”font­size:large; font­weight:bold”>";
+        echo "<table class='table-centered' cols='3'>";
         echo "<tr>"; // open the first row
         for ($pos = 0; $pos < 9; $pos++) {
             echo $this->show_cell($pos);
@@ -61,14 +91,16 @@ class Game {
         }
         echo "</tr>"; // close the last row
         echo "</table>";
-        echo "<br><br><a href='?'>New Game</a>";
+        if ($this->game_over) {
+            echo "<br><br><a href='?'>New Game</a>";
+        }
     }
     // get the appropriate character to display on the game board, else return a hyphen
     private function show_cell($cell) {
         $token = $this->position[$cell];
 
         if ($token != "-") {
-            return "<td>" . $token . "</td>";
+            return "<td class='text-center'>" . $token . "</td>";
         }
 
         $this->newposition = $this->position;
@@ -77,7 +109,11 @@ class Game {
         $move = implode($this->newposition);
         $link = "/comp4711-tictactoe/index.php?board=" . $move;
 
-        return "<td><a href='$link'>-</a></td>";
+        if (!$this->game_over) {
+            return "<td><a href='$link'>-</a></td>";
+        } else {
+            return "<td></td>";
+        }
     }
 
     // check if the game tied

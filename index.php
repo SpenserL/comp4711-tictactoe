@@ -61,24 +61,25 @@ class Game {
         $msg = null;
 
         if ($this->winner("x")) {
-            $msg = "You Won!";
+            $msg = "You Won... Or cheated";
             $this->game_over = true;
         } else {
             $this->move();
 
             if ($this->winner("o")) {
-                $msg = "You Lose!";
+                $msg = "You Lost. Obviously.";
                 $this->game_over = true;
             }
         }
 
         if ($this->tied()) {
-            $msg = "Tie Game!";
+            $msg = "Tie Game! Wow you really suck at tic tac toe.";
             $this->game_over = true;
         }
-        echo "<h3>$msg</h3>";
 
         $this->display();
+
+        echo "<h3>$msg</h3>";
     }
 
     // display the game board
@@ -92,7 +93,9 @@ class Game {
         echo "</tr>"; // close the last row
         echo "</table>";
         if ($this->game_over) {
-            echo "<br><br><a href='?'>New Game</a>";
+            echo "<br><br><a class='btn btn-primary' role='button' href='?'>New Game</a>";
+        } else {
+            echo "<br><br><a class='btn btn-primary' role='button' href='?'>Restart</a>";
         }
     }
     // get the appropriate character to display on the game board, else return a hyphen
@@ -100,7 +103,7 @@ class Game {
         $token = $this->position[$cell];
 
         if ($token != "-") {
-            return "<td class='text-center'>" . $token . "</td>";
+            return "<td class='text-center'><p>" . $token . "</p></td>";
         }
 
         $this->newposition = $this->position;
@@ -126,6 +129,7 @@ class Game {
         return true;
     }
 
+    // randomly choose a place to move
     private function move() {
         $done = false;
 

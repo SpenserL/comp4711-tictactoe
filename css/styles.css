@@ -1,7 +1,11 @@
 td {
-    width: 100px;
-    height: 100px;
+    width: 125px;
+    height: 125px;
     border: 1px solid #000;
+}
+
+td p {
+    font-size: 5em;
 }
 
 td a {

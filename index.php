@@ -51,6 +51,7 @@ class Game {
         }
         echo "</tr>"; // close the last row
         echo "</table>";
+        echo "<br><a href='?'>New Game</a>";
     }
     // get the appropriate character to display on the game board, else return a hyphen
     private function show_cell($cell) {
@@ -61,10 +62,10 @@ class Game {
         }
 
         $this->newposition = $this->position;
-        $this->newposition[$cell] = "o";
+        $this->newposition[$cell] = "x";
 
         $move = implode($this->newposition);
-        $link = "/?board=" . $move;
+        $link = "/comp4711-tictactoe/index.php?board=" . $move;
 
         return "<td><a href='$link'>-</a></td>";
     }

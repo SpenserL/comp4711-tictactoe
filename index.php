@@ -16,7 +16,6 @@
     } else {
         echo "No winner yet.";
     }
-    echo "<p>Welcome to George, the evil Tic-Tac-Toe Game.</p><br>";
     $game->display();
 
     ?>
@@ -34,9 +33,12 @@ class Game {
         // if invalid, pad with - until of length 9
         if (empty($board) || strlen($board) < 9) {
             $this->position = str_pad($board, 9, "-");
+            // split into an array
+            $this->position = str_split($this->position);
+        } else {
+            $this->position = str_split($board);
         }
-        // split into an array
-        $this->position = str_split($this->position);
+
     }
 
     // display the game board
